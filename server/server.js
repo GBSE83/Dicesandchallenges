@@ -3,8 +3,14 @@ const http = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
+const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: '*', // Permite conexiones desde cualquier origen (cambia esto en producción)
+        methods: ['GET', 'POST'],
+    },
+});
 
 // Servir archivos estáticos (tu juego)
 app.use(express.static('public'));
