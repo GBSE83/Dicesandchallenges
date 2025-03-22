@@ -110,7 +110,11 @@
                 <button id="roll-dice" class="btn btn-large" disabled>Lanzar Dados</button>
                 <button id="continue-game" class="btn btn-large" disabled>Continuar Juego</button>
                 <button id="undo-last-roll" class="btn btn-large btn-undo" disabled>Anular última tirada</button>
-
+                <button id="show-last-dice-result" class="btn-eye btn-large" disabled aria-label="Mostrar última tirada">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                </button>
                 <div class="dice-range-container">
                     <div style="display: flex; flex-direction: column; align-items: center;">
                         <label for="dice-max-value" id="dice-range-label" class="dice-range-label">Valor máximo de dados:</label>
@@ -202,23 +206,23 @@
     <div id="load-challenge-list-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Cargar Lista de Pruebas</h2>
+                <h2 id="load-list-title">Cargar Lista de Pruebas</h2>
                 <button type="button" class="close-button" id="close-load-list-modal">×</button>
             </div>
             <div class="modal-body">
-                <p>Selecciona el origen de la lista de pruebas:</p>
+                <p id="load-list-prompt">Selecciona el origen de la lista de pruebas:</p>
                 <div class="modal-actions">
-                    <button id="load-from-file-btn" class="btn">Cargar desde archivo</button>
-                    <button id="load-from-simple-list-btn" class="btn">Cargar lista simple</button>
-                    <button id="load-from-text-btn" class="btn">Pegar texto</button>
-                    <button id="cancel-load-list-btn" class="btn">Cancelar</button>
+                    <button id="load-from-file-btn" class="btn" >Cargar desde archivo</button>
+                    <button id="load-from-simple-list-btn" class="btn" >Cargar lista simple</button>
+                    <button id="load-from-text-btn" class="btn" >Pegar texto</button>
+                    <button id="cancel-load-list-btn" class="btn" >Cancelar</button>
                 </div>
                 <div id="paste-text-area" style="display: none; margin-top: 20px;">
                     <p>Pega el texto de la lista de pruebas aquí:</p>
                     <textarea id="pasted-text" style="width: 100%; min-height: 150px;"></textarea>
-                    <button id="clear-paste-text-btn" class="btn">Borrar texto actual</button>
-                    <button id="paste-clipboard-text-btn" class="btn">Pegar texto copiado</button>
-                    <button id="confirm-paste-btn" class="btn">Cargar con texto pegado</button>
+                    <button id="clear-paste-text-btn" class="btn" >Borrar texto actual</button>
+                    <button id="paste-clipboard-text-btn" class="btn" >Pegar texto copiado</button>
+                    <button id="confirm-paste-btn" class="btn" >Cargar con texto pegado</button>
                 </div>
             </div>
         </div>

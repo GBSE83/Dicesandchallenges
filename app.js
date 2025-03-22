@@ -60,6 +60,7 @@ const translations = {
         downloadAllChallenges: "Todas las pruebas",
         downloadActiveChallenges: "Pruebas activas ",
         cancelDownload: "Cancelar",
+        downloadSimpleList: "Lista sencilla",
         descriptionInstructionsTitle: "Descripción del Juego e Instrucciones Iniciales",
         descriptionTitle: "Descripción",
         gameTitleLabel: "Título del Juego",
@@ -82,7 +83,6 @@ const translations = {
         pasteText: "Pegar texto",
         loadWithPastedText: "Cargar con texto pegado",
         cancelLoad: "Cancelar",
-        downloadSimpleList: "Lista sencilla",
         includeDeactivatedChallenges: "¿Quieres incluir las pruebas desactivadas en la lista sencilla?",
         diceValueError: "El valor máximo de los dados no puede ser tan bajo para ese número de jugadores activos.",
         rollNoChallengeWarning: "¿Seguro que quieres realizar una tirada sin prueba? Los resultados no contarán para el juego.",
@@ -168,6 +168,7 @@ const translations = {
         downloadAllChallenges: "All challenges",
         downloadActiveChallenges: "Active challenges ",
         cancelDownload: "Cancel",
+        downloadSimpleList: "Simple list",
         descriptionInstructionsTitle: "Game Description and Initial Instructions",
         descriptionTitle: "Description",
         gameTitleLabel: "Game Title",
@@ -190,7 +191,6 @@ const translations = {
         pasteText: "Paste text",
         loadWithPastedText: "Load with pasted text",
         cancelLoad: "Cancel",
-        downloadSimpleList: "Simple list",
         includeDeactivatedChallenges: "Include deactivated challenges in the simple list?",
         diceValueError: "The maximum dice value cannot be that low for that number of active players.",
         rollNoChallengeWarning: "Are you sure you want to perform a roll without challenge? The results will not count towards the game.",
@@ -311,6 +311,7 @@ const autoCloseTimerInput = document.getElementById('auto-close-timer');
 const clearPasteTextBtn = document.getElementById('clear-paste-text-btn');
 const pasteClipboardTextBtn = document.getElementById('paste-clipboard-text-btn');
 const allowDuplicateRollsCheckbox = document.getElementById('allow-duplicate-rolls-checkbox'); 
+const showLastDiceResultBtn = document.getElementById('show-last-dice-result'); 
 
 // Event listeners
 addPlayerBtn.addEventListener('click', addPlayer);
@@ -351,6 +352,7 @@ autoCloseModalCheckbox.addEventListener('change', toggleAutoCloseTimer);
 clearPasteTextBtn.addEventListener('click', clearPastedText);
 pasteClipboardTextBtn.addEventListener('click', pasteFromClipboard);
 rollNoChallengeCheckbox.addEventListener('change', updateRollDiceButtonState);
+showLastDiceResultBtn.addEventListener('click', showLastDiceResult);
 
 // Event listeners for section toggling
 sectionHeaders.forEach(header => {
@@ -412,7 +414,10 @@ function init() {
     selectChallengesBtn.disabled = gameState.challenges.length === 0;
     updateDeactivatedChallengeList(); 
     undoLastRollBtn.disabled = true; 
+    showLastDiceResultBtn.disabled = true; 
     setupChallengeTooltip();
+    setupCurrentChallengePopup(); 
+    setupDicePopup(); 
     diceMaxValueInput.value = gameState.diceMaxValue; 
     allowDuplicateRollsCheckbox.checked = gameState.allowDuplicateRolls; 
 }
@@ -789,6 +794,7 @@ function performNoChallengeRoll() {
         diceElements.forEach((dice, i) => {
             if (lowestRollers.some(loser => loser.player === results[i].player)) {
                 dice.classList.add('lowest-roll');
+                dice.addEventListener('click', () => showDicePopup(results[i].player)); // Add click event listener to loser's dice
             }
             if (highestRollers.some(winner => winner.player === results[i].player) && !dice.classList.contains('lowest-roll')) {
                 dice.classList.add('highest-roll');
@@ -898,6 +904,7 @@ function performGameRoll() {
                 diceElements.forEach((dice, i) => {
                     if (results[i].player === result.player) {
                         dice.classList.add('winner');
+                        dice.addEventListener('click', () => showDicePopup(result.player)); // Add click event listener to loser's dice
                     }
                 });
                 diceElements.forEach((dice, i) => {
@@ -972,7 +979,8 @@ function showRoundResults(results, losers) {
             value: r.value,
             isLoser: losers.includes(r)
         })),
-        html: roundResultsHTML
+        html: roundResultsHTML,
+        diceResult: modalDiceContainer.innerHTML // Store the dice result HTML
     });
 }
 
@@ -1080,6 +1088,7 @@ function updateLanguage() {
     downloadAllChallengesBtn.textContent = translations[lang].downloadAllChallenges;
     downloadActiveChallengesBtn.textContent = translations[lang].downloadActiveChallenges;
     cancelDownloadListBtn.textContent = translations[lang].cancelDownload;
+    downloadSimpleListBtn.textContent = translations[lang].downloadSimpleList;
 
     const diceRangeLabel = document.getElementById('dice-range-label');
     if (diceRangeLabel) {
@@ -1090,6 +1099,24 @@ function updateLanguage() {
     document.querySelector('label[for="auto-close-modal-checkbox"]').textContent = translations[lang].autoCloseModalCheckboxLabel;
     document.querySelector('#auto-close-timer-container label').textContent = translations[lang].autoCloseTimerLabel;
     document.querySelector('label[for="allow-duplicate-rolls-checkbox"]').textContent = translations[lang].allowDuplicateRollsCheckboxLabel;
+
+    // Load Challenge List Modal Translations
+    const loadListModalHeader = loadChallengeListModal.querySelector('.modal-header h2');
+    if (loadListModalHeader) {
+        loadListModalHeader.textContent = translations[lang].loadListTitle;
+    }
+    const loadListModalPrompt = loadChallengeListModal.querySelector('.modal-body p');
+    if (loadListModalPrompt) {
+        loadListModalPrompt.textContent = translations[lang].loadListPrompt;
+    }
+    document.getElementById('load-from-file-btn').textContent = translations[lang].loadFromFile;
+    document.getElementById('load-from-simple-list-btn').textContent = translations[lang].loadSimpleList;
+    document.getElementById('load-from-text-btn').textContent = translations[lang].pasteText;
+    document.getElementById('cancel-load-list-btn').textContent = translations[lang].cancelLoad;
+    pasteTextAreaDiv.querySelector('p').textContent = translations[lang].pasteText + ' ' + translations[lang].challengesTitle.toLowerCase() + ' ' + translations[lang].loadListPrompt.slice(0, translations[lang].loadListPrompt.length -1).toLowerCase() + ':';
+    document.getElementById('clear-paste-text-btn').textContent = translations[lang].resetData + ' ' + translations[lang].instructionsTitle.toLowerCase();
+    document.getElementById('paste-clipboard-text-btn').textContent = translations[lang].pasteClipboard;
+    document.getElementById('confirm-paste-btn').textContent = translations[lang].loadWithPastedText;
 
     // Translate Description and Instructions section
     descriptionInstructionsTitle.textContent = translations[lang].descriptionInstructionsTitle;
@@ -1114,6 +1141,7 @@ function updateLanguage() {
     document.getElementById('download-challenge-list-btn').textContent = translations[lang].downloadChallengeList;
     document.getElementById('clear-paste-text-btn').textContent = translations[lang].resetData;
     document.getElementById('paste-clipboard-text-btn').textContent = translations[lang].pasteClipboard;
+    document.getElementById('show-last-dice-result').setAttribute('aria-label', lang === 'es' ? 'Mostrar última tirada' : 'Show last roll');
 }
 
 // Update player levels display
@@ -1170,6 +1198,11 @@ function openDiceModal() {
 // Close dice results modal
 function closeDiceModal() {
     modal.style.display = "none";
+    const dicePopup = modal.querySelector('.dice-description-popup');
+    if (dicePopup) {
+        dicePopup.classList.remove('show');
+    }
+    showLastDiceResultBtn.disabled = gameState.roundsLogData.length === 0;
 }
 
 // Open save game modal
@@ -1391,6 +1424,7 @@ function updateUIFromState() {
         });
     }
     updateDeactivatedChallengeList(); 
+    showLastDiceResultBtn.disabled = gameState.roundsLogData.length === 0;
 }
 
 // Reset all game data
@@ -1745,13 +1779,91 @@ function setupChallengeTooltip() {
     });
 
     currentChallengeDiv.addEventListener('mouseout', function(event) {
-        if (event.target.closest('.player-challenge') || 
+        if (event.target.closest('.player-challenge') ||
             (currentChallengeDisplay.textContent === translations[gameState.currentLanguage].initialStatus &&
              (event.target === currentChallengeDisplay || event.target.parentElement === currentChallengeDisplay))) {
             tooltip.style.opacity = '0';
             setTimeout(() => tooltip.style.display = 'none', 300);
         }
     });
+}
+
+// Setup the current challenge description popup
+function setupCurrentChallengePopup() {
+    const challengePopup = document.createElement('div');
+    challengePopup.className = 'challenge-description-popup';
+    challengePopup.innerHTML = `
+        <div class="popup-header">
+            <h4 class="popup-title"></h4>
+            <button class="popup-close-button">×</button>
+        </div>
+        <div class="popup-content"></div>
+    `;
+    currentChallengeDiv.appendChild(challengePopup);
+    const popupContent = challengePopup.querySelector('.popup-content');
+    const popupTitle = challengePopup.querySelector('.popup-title');
+    const closePopupButton = challengePopup.querySelector('.popup-close-button');
+
+    closePopupButton.addEventListener('click', () => {
+        challengePopup.classList.remove('show');
+    });
+
+    currentChallengeDiv.addEventListener('click', function(event) {
+        const playerElement = event.target.closest('.player-challenge');
+        if (playerElement && playerElement.dataset.description) {
+            popupTitle.textContent = playerElement.textContent.split(':')[0].trim();
+            popupContent.textContent = playerElement.dataset.description;
+            challengePopup.classList.add('show');
+        } else if (currentChallengeDisplay.textContent === translations[gameState.currentLanguage].initialStatus &&
+                   (event.target === currentChallengeDisplay || event.target.parentElement === currentChallengeDisplay)) {
+            popupTitle.textContent = translations[gameState.currentLanguage].instructionsTitle;
+            popupContent.textContent = gameInstructions.value;
+            challengePopup.classList.add('show');
+        } else {
+            challengePopup.classList.remove('show'); // Hide if click outside player or initial status
+        }
+    });
+}
+
+// Setup the dice description popup
+function setupDicePopup() {
+    const dicePopup = document.createElement('div');
+    dicePopup.className = 'dice-description-popup';
+    dicePopup.innerHTML = `
+        <div class="popup-header">
+            <h4 class="popup-title"></h4>
+            <button class="popup-close-button">×</button>
+        </div>
+        <div class="popup-content"></div>
+    `;
+    modal.appendChild(dicePopup); // Append to modal for overlay effect
+    const popupContent = dicePopup.querySelector('.popup-content');
+    const popupTitle = dicePopup.querySelector('.popup-title');
+    const closePopupButton = dicePopup.querySelector('.popup-close-button');
+
+    closePopupButton.addEventListener('click', () => {
+        dicePopup.classList.remove('show');
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            dicePopup.classList.remove('show'); // Close popup when clicking outside modal content
+        }
+    });
+}
+
+// Function to show the dice popup with player's challenge information
+function showDicePopup(player) {
+    const dicePopup = modal.querySelector('.dice-description-popup');
+    const popupTitle = dicePopup.querySelector('.popup-title');
+    const popupContent = dicePopup.querySelector('.popup-content');
+
+    const challengeIndex = Math.min(player.level -1 , gameState.challenges.length - 1);
+    const currentChallenge = gameState.challenges[challengeIndex];
+
+    popupTitle.textContent = `${player.name}: ${currentChallenge.name}`;
+    popupContent.textContent = currentChallenge.description;
+    dicePopup.classList.add('show');
 }
 
 // Update dice max value
@@ -1833,6 +1945,37 @@ async function pasteFromClipboard() {
     } catch (err) {
         console.error('Failed to read clipboard contents: ', err);
         alert('Error al leer el portapapeles. Asegúrate de que tu navegador permite el acceso al portapapeles.');
+    }
+}
+
+function showLastDiceResult() {
+    if (gameState.roundsLogData.length === 0) {
+        return;
+    }
+    
+    const lastRound = gameState.roundsLogData[gameState.roundsLogData.length - 1];
+    modalDiceContainer.innerHTML = lastRound.diceResult;
+
+    const diceElements = modalDiceContainer.querySelectorAll('.dice');
+    diceElements.forEach(dice => {
+        if (dice.classList.contains('lowest-roll')) {
+            const playerNameDiv = dice.querySelector('.player-name');
+            if (playerNameDiv) {
+                const playerName = playerNameDiv.textContent;
+                const player = gameState.players.find(p => p.name === playerName);
+                if (player) {
+                    dice.addEventListener('click', () => showDicePopup(player));
+                }
+            }
+        }
+    });
+    
+    openDiceModal();
+    
+    if (autoCloseModalCheckbox.checked) {
+        autoCloseTimerContainer.style.display = 'flex';
+    } else {
+        autoCloseTimerContainer.style.display = 'none';
     }
 }
 
