@@ -1,4 +1,4 @@
-const socket = io(); // Conectar al servidor Socket.IO
+const socket = io('https://dicesandchallenges.onrender.com'); // Conectar al servidor Socket.IO
 
 let roomId = null;
 let isHost = false;
