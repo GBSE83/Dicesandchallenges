@@ -1,3 +1,49 @@
+const socket = io(); // Conectar al servidor Socket.IO
+
+let roomId = null;
+let isHost = false;
+
+// Función para crear una sala (anfitrión)
+function createRoom() {
+    roomId = Math.random().toString(36).substring(7); // Generar un ID único para la sala
+    isHost = true;
+    socket.emit('create-room', roomId);
+    alert(`Sala creada. Comparte este enlace con los jugadores: ${window.location.href}?room=${roomId}`);
+}
+
+// Función para unirse a una sala (jugadores invitados)
+function joinRoom() {
+    const urlParams = new URLSearchParams(window.location.search);
+    roomId = urlParams.get('room');
+    if (roomId) {
+        socket.emit('join-room', roomId);
+    } else {
+        alert('No se ha proporcionado un ID de sala válido.');
+    }
+}
+
+// Escuchar eventos del servidor
+socket.on('update-game', (data) => {
+    if (!isHost) {
+        // Actualizar el estado del juego en los jugadores invitados
+        gameState = data.gameState;
+        updateUIFromState();
+    }
+});
+
+// Transmitir eventos del anfitrión
+function broadcastGameState() {
+    if (isHost) {
+        socket.emit('game-event', {
+            roomId: roomId,
+            gameState: gameState
+        });
+    }
+}
+
+// Llamar a broadcastGameState después de cada acción importante
+// Por ejemplo, después de agregar un jugador, lanzar los dados, etc.
+
 // Language translations
 const translations = {
     es: {
