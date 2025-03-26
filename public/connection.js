@@ -63,7 +63,12 @@ function initConnection() {
 function initHostConnection() {
     try {
         // Reconnect to the same peer ID
-        connectionState.peer = new Peer(`dice-game-${connectionState.accessCode}`);
+        connectionState.peer = new Peer(`dice-game-${connectionState.accessCode}`, {
+  host: '0.peerjs.com',
+  port: 443,
+  secure: true,
+  path: '/'
+});
         
         connectionState.peer.on('open', (id) => {
             connectionState.isConnected = true;
