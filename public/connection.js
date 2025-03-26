@@ -693,12 +693,12 @@ function exitGame() {
     }
     
     // Redirect to landing page
-    window.location.href = 'landing.html';
+    window.location.href = '/landing.html';
 }
 
 // Redirect to landing page
 function redirectToLanding() {
-    window.location.href = 'landing.html';
+    window.location.href = '/landing.html';
 }
 
 // Hide waiting screen
