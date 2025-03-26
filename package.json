@@ -1,7 +1,6 @@
 {
   "name": "dice-game",
   "version": "1.0.0",
-  "description": "Juego de Dados y Pruebas",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
