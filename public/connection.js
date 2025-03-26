@@ -101,11 +101,21 @@ function initHostConnection() {
 function initGuestConnection() {
     try {
         // Create a new peer for the guest
-        connectionState.peer = new Peer();
+        connectionState.peer = new Peer({
+  host: '0.peerjs.com',
+  port: 443,
+  secure: true,
+  path: '/'
+});
         
         connectionState.peer.on('open', (id) => {
             // Connect to host
-            const conn = connectionState.peer.connect(`dice-game-${connectionState.accessCode}`);
+            const conn = connectionState.peer.connect(`dice-game-${connectionState.accessCode}`, {
+  host: '0.peerjs.com',
+  port: 443,
+  secure: true,
+  path: '/'
+});
             
             conn.on('open', () => {
                 connectionState.hostConnection = conn;
