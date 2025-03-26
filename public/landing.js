@@ -285,7 +285,7 @@ function handleHostData(data) {
         params.append('peerId', landingState.peerId);
         params.append('language', landingState.currentLanguage);
         params.append('darkMode', landingState.isDarkMode);
-        window.location.href = `game.html?${params.toString()}`;
+        window.location.href = `/game.html?${params.toString()}`;
         return;
     }
     
@@ -374,7 +374,7 @@ function startGameAsHost() {
     params.append('peerId', landingState.peerId);
     params.append('language', landingState.currentLanguage);
     params.append('darkMode', landingState.isDarkMode);
-    window.location.href = `game.html?${params.toString()}`;
+    window.location.href = `/game.html?${params.toString()}`;
 }
 
 // Open the host code modal
