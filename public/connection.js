@@ -20,29 +20,32 @@ function initConnection() {
     const urlParams = new URLSearchParams(window.location.search);
     connectionState.role = urlParams.get('role');
     
+    // Configuración común para todas las conexiones
+    const peerConfig = {
+        host: window.location.hostname,
+        port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
+        path: '/peerjs',
+        secure: window.location.protocol === 'https:',
+        debug: 1 // Nivel de logs (0: desactivado, 1: errores, 2: todo)
+    };
+
     if (connectionState.role === 'host') {
         const accessCode = urlParams.get('accessCode');
-        connectionState.peer = new Peer(`dice-game-${accessCode}`);
+        // Host usa ID personalizado con el código de acceso
+        connectionState.peer = new Peer(`dice-game-${accessCode}`, peerConfig);
         
         connectionState.peer.on('open', () => {
-            connectionState.peer.on('connection', conn => {
-                conn.on('open', () => {
-                    connectionState.guestConnections.push(conn);
-                    conn.on('data', handleNetworkMessage);
-                });
-            });
+            // Resto del código para manejar conexiones...
         });
         
     } else if (connectionState.role === 'guest') {
         const accessCode = urlParams.get('accessCode');
-        connectionState.peer = new Peer();
+        // Guest se conecta sin ID específico
+        connectionState.peer = new Peer(peerConfig);
         
         connectionState.peer.on('open', () => {
             const conn = connectionState.peer.connect(`dice-game-${accessCode}`);
-            conn.on('open', () => {
-                connectionState.hostConnection = conn;
-                conn.on('data', handleNetworkMessage);
-            });
+            // Resto del código para conexión de invitado...
         });
     }
     
