@@ -187,7 +187,18 @@ function setupGuestConnection(conn) {
 
 // Handle data received from host
 function handleHostData(data) {
-    console.log('Received data from host:', data);
+    console.log("Datos recibidos:", data); // Debug
+    
+    if (data.type === 'game-state-update') {
+        console.log("Actualizando estado del juego...");
+        
+        // Verifica si los datos son más recientes
+        if (!gameState.lastUpdate || data.timestamp > gameState.lastUpdate) {
+            Object.assign(gameState, data.gameState);
+            updateUIFromState();
+            console.log("Estado actualizado correctamente");
+        } else {
+            console.log("Datos recibidos son antiguos, ignorando");
     
     if (data.type === 'name-rejected') {
         alert(data.message);
