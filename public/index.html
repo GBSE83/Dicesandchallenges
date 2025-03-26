@@ -1,0 +1,244 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Dados y Pruebas</title>
+    <script>
+        // Redirect to landing page
+        window.location.href = 'landing.html';
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</head>
+<body class="light-mode">
+    <header>
+        <h1 id="game-title">Juego de Dados y Pruebas</h1>
+        <div class="controls">
+            <button id="theme-toggle" aria-label="Cambiar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                    <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                    <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                    <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                    <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                </svg>
+            </button>
+            <button id="language-toggle">ES</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="player-section">
+            <div class="section-header" data-target="player-content">
+                <h2 id="players-title">Jugadores</h2>
+                <button class="toggle-btn">-</button>
+            </div>
+            <div id="player-content" class="section-content">
+                <div class="player-input">
+                    <input type="text" id="player-name" placeholder="Nombre del jugador">
+                    <button id="add-player" class="btn">Añadir Jugador</button>
+                </div>
+                <ul id="player-list"></ul>
+            </div>
+        </section>
+
+        <section id="description-instructions-section">
+            <div class="section-header" data-target="description-content">
+                <h2 id="description-instructions-title">Descripción e Instrucciones iniciales del juego</h2>
+                <button class="toggle-btn">-</button>
+            </div>
+            <div id="description-content" class="section-content">
+                <div class="description-box">
+                    <h3 id="game-title-label">Título del Juego</h3>
+                    <input type="text" id="game-title-input" placeholder="Escribe aquí el título del juego">
+                </div>
+                <div class="description-box">
+                    <h3 id="description-title">Descripción</h3>
+                    <textarea id="game-description" placeholder="Escribe aquí la descripción del juego"></textarea>
+                </div>
+                <div class="instructions-box">
+                    <h3 id="instructions-title">Instrucciones</h3>
+                    <textarea id="game-instructions" placeholder="Escribe aquí las instrucciones del juego"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenges-section">
+            <div class="section-header" data-target="challenges-content">
+                <h2 id="challenges-title">Pruebas</h2>
+                <button class="toggle-btn">-</button>
+            </div>
+            <div id="challenges-content" class="section-content">
+                <div class="challenge-input">
+                    <input type="text" id="challenge-name" placeholder="Nombre de la prueba">
+                    <button id="add-challenge" class="btn">Añadir Prueba</button>
+                    <button id="load-challenge-list" class="btn">Cargar Lista</button>
+                    <button id="select-challenges-btn" class="btn">Seleccionar pruebas</button>
+                    <button id="download-challenge-list-btn" class="btn">Descargar Lista</button>
+                </div>
+                <div class="challenge-input">
+                    <input type="text" id="challenge-description" placeholder="Descripción de la prueba">
+                </div>
+                <div id="challenge-actions" style="display:none;">
+                    <button id="delete-selected-challenges-btn" class="btn">Eliminar seleccionadas</button>
+                    <button id="deactivate-selected-challenges-btn" class="btn">Desactivar seleccionadas</button>
+                    <button id="select-all-challenges-btn" class="btn">Seleccionar todas</button>
+                </div>
+                <ul id="challenge-list"></ul>
+
+                <div class="deactivated-challenges-container">
+                    <button id="toggle-deactivated-challenges-btn" class="btn">Mostrar desactivadas</button>
+                    <ul id="deactivated-challenge-list" style="display:none;"></ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="game-section">
+            <div class="section-header" data-target="game-content">
+                <h2 id="game-status-title">Estado del Juego</h2>
+                <button class="toggle-btn">-</button>
+            </div>
+            <div id="game-content" class="section-content">
+                <div id="current-challenge-display">
+                    <p id="current-challenge-label">Prueba Actual:</p>
+                    <p id="current-challenge">-</p>
+                    <!-- The tooltip will be inserted here by JavaScript -->
+                </div>
+                <ul id="player-levels-list"></ul>
+                <button id="start-game" class="btn btn-large">Comenzar Juego</button>
+                <button id="roll-dice" class="btn btn-large" disabled>Lanzar Dados</button>
+                <button id="continue-game" class="btn btn-large" disabled>Continuar Juego</button>
+                <button id="undo-last-roll" class="btn btn-large btn-undo" disabled>Anular última tirada</button>
+                <button id="show-last-dice-result" class="btn-eye btn-large" disabled aria-label="Mostrar última tirada">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                </button>
+                <div class="dice-range-container">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <label for="dice-max-value" id="dice-range-label" class="dice-range-label">Valor máximo de dados:</label>
+                        <input type="number" id="dice-max-value" min="0" max="25" value="10">
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+                        <input type="checkbox" id="roll-no-challenge-checkbox" style="margin-right: 5px;">
+                        <label for="roll-no-challenge-checkbox">Tirada sin Prueba</label>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+                        <input type="checkbox" id="allow-duplicate-rolls-checkbox" style="margin-right: 5px;">
+                        <label for="allow-duplicate-rolls-checkbox">Permitir dados duplicados</label>
+                    </div>
+                    <div id="dice-range-error" class="dice-range-error"></div>
+                </div>
+
+                <div id="dice-container"></div>
+
+                <div id="results-display">
+                    <h3 id="results-title">Resultados</h3>
+                    <div id="round-results"></div>
+                    <div id="rounds-log"></div>  
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- The Dice Results Modal -->
+    <div id="results-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Dice Results</h2>
+                <button type="button" class="close-button">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-dice-container">
+                    <!-- Dice will be placed here by JavaScript -->
+                </div>
+                <div style="margin-top: 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                    <input type="checkbox" id="auto-close-modal-checkbox" style="vertical-align: middle; margin-right: 5px;">
+                    <label for="auto-close-modal-checkbox" id="auto-close-modal-checkbox-label">Cerrar automáticamente</label>
+                    <div id="auto-close-timer-container" style="display: none; margin-top: 10px; align-items: center;">
+                        <label for="auto-close-timer" style="margin-right: 5px;">Temporizador (segundos):</label>
+                        <input type="number" id="auto-close-timer" min="1" value="5" style="width: 50px; text-align: center;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Save Game Modal -->
+    <div id="save-game-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Guardar Partida</h2>
+                <button type="button" class="close-button" id="close-save-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Introduce un nombre para el archivo de guardado:</p>
+                <input type="text" id="save-filename" placeholder="nombre-partida">
+                <div class="modal-actions">
+                    <button id="confirm-save" class="btn">Guardar</button>
+                    <button id="cancel-save" class="btn">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Download Challenge List Modal -->
+    <div id="download-challenge-list-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="download-list-title">Descargar Lista de Pruebas</h2>
+                <button type="button" class="close-button" id="close-download-list-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="download-list-prompt">Selecciona qué tipo de lista quieres descargar:</p>
+                <div class="modal-actions">
+                    <button id="download-all-challenges-btn" class="btn">Todas las pruebas</button>
+                    <button id="download-active-challenges-btn" class="btn">Pruebas activas</button>
+                    <button id="download-simple-list-btn" class="btn">Lista sencilla</button>
+                    <button id="cancel-download-list-btn" class="btn">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Load Challenge List Modal -->
+    <div id="load-challenge-list-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="load-list-title">Cargar Lista de Pruebas</h2>
+                <button type="button" class="close-button" id="close-load-list-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="load-list-prompt">Selecciona el origen de la lista de pruebas:</p>
+                <div class="modal-actions">
+                    <button id="load-from-file-btn" class="btn" >Cargar desde archivo</button>
+                    <button id="load-from-simple-list-btn" class="btn" >Cargar lista simple</button>
+                    <button id="load-from-text-btn" class="btn" >Pegar texto</button>
+                    <button id="cancel-load-list-btn" class="btn" >Cancelar</button>
+                </div>
+                <div id="paste-text-area" style="display: none; margin-top: 20px;">
+                    <p>Pega el texto de la lista de pruebas aquí:</p>
+                    <textarea id="pasted-text" style="width: 100%; min-height: 150px;"></textarea>
+                    <button id="clear-paste-text-btn" class="btn" >Borrar texto actual</button>
+                    <button id="paste-clipboard-text-btn" class="btn" >Pegar texto copiado</button>
+                    <button id="confirm-paste-btn" class="btn" >Cargar con texto pegado</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p id="footer-text">Juego de Dados y Pruebas &copy; 2025</p>
+        <button id="save-game-btn" class="btn">Guardar Partida</button>
+        <button id="load-game-btn" class="btn">Cargar Partida</button>
+        <button id="reset-game-btn" class="btn">Vaciar Datos</button>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

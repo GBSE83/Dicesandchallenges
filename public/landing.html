@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Dados y Pruebas - Acceso</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="landing-styles.css">
+</head>
+<body class="light-mode">
+    <header>
+        <h1 id="landing-title">Juego de Dados y Pruebas</h1>
+        <div class="controls">
+            <button id="theme-toggle" aria-label="Cambiar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                    <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                    <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                    <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                    <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                </svg>
+            </button>
+            <button id="language-toggle">ES</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="landing-container">
+            <h2 id="welcome-message">Bienvenido al Juego de Dados y Pruebas</h2>
+            <p id="landing-instructions">Elige una de las siguientes opciones para comenzar:</p>
+            
+            <div class="access-options">
+                <div class="option-card host-option">
+                    <h3 id="host-title">Opción 1: Anfitrión</h3>
+                    <p id="host-description">Crea una nueva partida y comparte el código con tus amigos para que puedan unirse como invitados.</p>
+                    <div class="option-form">
+                        <label for="host-name" id="host-name-label">Tu nombre:</label>
+                        <input type="text" id="host-name" placeholder="Introduce tu nombre">
+                        <button id="create-game-btn" class="btn btn-large">Crear partida</button>
+                    </div>
+                </div>
+                
+                <div class="option-card guest-option">
+                    <h3 id="guest-title">Opción 2: Invitado</h3>
+                    <p id="guest-description">Únete a una partida existente con el código proporcionado por el anfitrión.</p>
+                    <div class="option-form">
+                        <label for="guest-name" id="guest-name-label">Tu nombre:</label>
+                        <input type="text" id="guest-name" placeholder="Introduce tu nombre">
+                        <label for="access-code" id="access-code-label">Código de acceso:</label>
+                        <input type="text" id="access-code" placeholder="Código de acceso">
+                        <button id="join-game-btn" class="btn btn-large">Unirse a partida</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Host Code Modal -->
+    <div id="host-code-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="host-code-title">Tu código de acceso</h2>
+                <button type="button" class="close-button" id="close-host-code-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="host-code-instructions">Comparte este código con los invitados para que puedan unirse a tu partida:</p>
+                <div class="access-code-display">
+                    <span id="generated-code">...</span>
+                    <button id="copy-code-btn" class="btn">Copiar</button>
+                </div>
+                <div class="connected-users">
+                    <h3 id="connected-users-title">Usuarios conectados:</h3>
+                    <ul id="connected-users-list">
+                        <!-- Connected users will appear here -->
+                    </ul>
+                </div>
+                <p class="host-note" id="host-note">Puedes comenzar la partida sin invitados o esperar a que se conecten.</p>
+                <button id="start-as-host-btn" class="btn btn-large">Comenzar partida</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="error-title">Error</h2>
+                <button type="button" class="close-button" id="close-error-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="error-message"></p>
+                <button id="error-ok-btn" class="btn">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p id="landing-footer-text">Juego de Dados y Pruebas &copy; 2025</p>
+    </footer>
+
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="landing.js"></script>
+</body>
+</html>
