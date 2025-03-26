@@ -807,10 +807,14 @@ if (typeof window.gameState !== 'undefined') {
 // Add periodic broadcast in host connection
 if (connectionState.role === 'host') {
     setInterval(() => {
-        if (connectionState.guestConnections.length > 0) {
-            broadcastGameState();
-        }
-    }, 2000); // Sync every 2 seconds
+    if (connectionState.role === 'host') {
+        connectionState.guestConnections.forEach(conn => {
+            if (conn.open) {
+                conn.send({ type: 'ping', timestamp: Date.now() });
+            }
+        });
+    }
+}, 15000); // Cada 15 segundos
 }
 
 // Initialize the connection system when the page loads
