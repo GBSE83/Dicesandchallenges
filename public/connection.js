@@ -559,26 +559,24 @@ function kickGuest(conn) {
 function broadcastGameState() {
     if (connectionState.role !== 'host') return;
     
-    // Create a copy of the game state to send
+    console.log("Preparando broadcast..."); // Debug
+    
     const gameStateCopy = JSON.parse(JSON.stringify(gameState));
+    gameStateCopy.lastUpdate = Date.now(); // Añade timestamp
     
-    // Add additional info for guests
-    gameStateCopy.modalOpen = (modal.style.display === 'flex');
-    gameStateCopy.modalDiceHtml = modalDiceContainer.innerHTML;
-    gameStateCopy.connectionState = connectionState; // Include connection state
-    
-    // Send to all connected guests
-    connectionState.guestConnections.forEach(conn => {
-        if (conn.open) {  // Only send to open connections
+    connectionState.guestConnections.forEach((conn, index) => {
+        if (conn.open) {
+            console.log(`Enviando a invitado ${index}`); // Debug
             conn.send({
                 type: 'game-state-update',
-                gameState: gameStateCopy
+                gameState: gameStateCopy,
+                timestamp: Date.now()
             });
+        } else {
+            console.warn(`Conexión ${index} cerrada, eliminando...`);
+            connectionState.guestConnections.splice(index, 1);
         }
     });
-    
-    // Update connection display to show current guest count
-    updateConnectionDisplay();
 }
 
 // Disable controls for guests
